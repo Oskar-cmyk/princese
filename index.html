@@ -3,14 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Simple Site</title>
+    <title>E1: Metamorphosis</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
-    <main class="container">
-      <h1>Simple HTML, CSS, and JS Site</h1>
-      <p id="message">Welcome!</p>
-      <button id="changeMessageButton" type="button">Click me</button>
+  <body class="theme-pink">
+    <main class="game-shell">
+      <section class="header-card">
+        <p class="chapter">E1: Metamorphosis</p>
+        <h1>Pool Party Quest</h1>
+        <p class="subtitle">A pink little adventure about Cleo, Matej, and a very dramatic pool.</p>
+      </section>
+
+      <section class="scene-card" aria-live="polite">
+        <div class="portrait-row" aria-hidden="true">
+          <div class="portrait cleo">Cleo</div>
+          <div class="portrait matej">Matej</div>
+          <div class="portrait zodiac">Zodiac</div>
+        </div>
+
+        <div class="dialogue-box">
+          <p class="speaker" id="speaker">Cleo</p>
+          <p class="message" id="message">Hey, Cleo. We need a hero for the pool situation.</p>
+        </div>
+
+        <div class="choice-row" id="choiceRow" hidden>
+          <button id="addWaterButton" type="button">Add water</button>
+          <button id="noWaterButton" type="button" class="secondary">Do not add water</button>
+        </div>
+
+        <button id="nextButton" type="button">Next</button>
+
+        <p class="ending-note" id="endingNote" hidden></p>
+      </section>
     </main>
     <script src="script.js"></script>
   </body>
