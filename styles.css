@@ -136,7 +136,58 @@ body {
   border: 2px solid rgba(255, 128, 191, 0.35);
   border-radius: 1.3rem;
   padding: 1rem 1rem 1.1rem;
-  min-height: 10rem;
+  min-height: 16rem;
+}
+
+.sms-thread {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.sms-log {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.sms-bubble {
+  max-width: min(80%, 42rem);
+  padding: 0.8rem 0.95rem;
+  border-radius: 1.15rem 1.15rem 1.15rem 0.35rem;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 146, 201, 0.45);
+  box-shadow: 0 10px 20px rgba(201, 62, 128, 0.08);
+}
+
+.sms-bubble.right {
+  margin-left: auto;
+  border-radius: 1.15rem 1.15rem 0.35rem 1.15rem;
+  background: linear-gradient(135deg, #ff7fbc, #ffc1df);
+  color: #4e1739;
+}
+
+.sms-bubble.system {
+  max-width: 100%;
+  margin: 0 auto;
+  text-align: center;
+  background: rgba(255, 237, 246, 0.9);
+  color: var(--pink-3);
+  font-weight: 700;
+}
+
+.sms-name {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.sms-text {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.5;
 }
 
 .speaker {
@@ -247,6 +298,22 @@ body.moody .scene-card {
 body.moody .dialogue-box {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.moody .sms-bubble {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f3f3f3;
+}
+
+body.moody .sms-bubble.right {
+  background: linear-gradient(135deg, #202027, #111115);
+  color: #f3f3f3;
+}
+
+body.moody .sms-bubble.system {
+  background: rgba(255, 255, 255, 0.05);
+  color: #d8a7c0;
 }
 
 body.moody .message,
