@@ -7,8 +7,28 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <section id="lockScreen" class="lock-screen" aria-label="Access lock">
+      <form id="lockForm" class="lock-card" autocomplete="off">
+        <h1>Enter access code</h1>
+        <label for="accessCode">Code</label>
+        <input
+          id="accessCode"
+          name="accessCode"
+          type="password"
+          inputmode="text"
+          autocapitalize="off"
+          autocorrect="off"
+          spellcheck="false"
+          required
+        />
+        <button type="submit">Unlock</button>
+        <p id="lockMessage" class="lock-message" aria-live="polite"></p>
+      </form>
+    </section>
     <main class="center-stage" aria-live="polite">
+      <button id="relockButton" class="relock-button" type="button" hidden>Relock</button>
       <div id="textReveal" class="text-reveal"></div>
+      <p id="endingNote" class="ending-note" hidden></p>
     </main>
     <script src="script.js"></script>
   </body>
