@@ -1,4 +1,16 @@
 const textReveal = document.getElementById("textReveal");
+const endingNote = document.getElementById("endingNote");
+const lockScreen = document.getElementById("lockScreen");
+const lockForm = document.getElementById("lockForm");
+const accessCodeInput = document.getElementById("accessCode");
+const lockMessage = document.getElementById("lockMessage");
+const relockButton = document.getElementById("relockButton");
+
+const unlockSessionKey = "princeseUnlockedSession";
+const waterTotalKey = "princeseWaterTotal";
+const waterEntriesKey = "princeseWaterEntries";
+const youtubeSongUrl = "https://www.youtube.com/watch?v=SJi9WILdmcM";
+const acceptedCodes = new Set(["h2o", "water", "voda"]);
 
 const lines = [
   "Cleo: Cleo!",
@@ -21,6 +33,15 @@ const lines = [
 
 let lineIndex = 0;
 let timerId = null;
+let choiceVisible = false;
+let storyEnded = false;
+let choiceBlock = null;
+let confirmationBlock = null;
+let isUnlocked = false;
+let selectedWaterLevel = 0;
+let waterMeterShown = false;
+
+const choicePointIndex = 10;
 
 function addLine(lineData) {
   if (!textReveal) return;
@@ -74,10 +95,306 @@ function addLine(lineData) {
       }
     }
   });
-  // if this is the last line, trigger final effect
-  if (line.classList.contains('last')) {
-    // small delay so the line is visible before the effect
+  // if this is the last line and the 3-drop path was chosen, trigger sparkle finale
+if (line.classList.contains('last') && (selectedWaterLevel === 3 || selectedWaterLevel === 4)) {
     setTimeout(() => createSparkles(), 250);
+  }
+}
+
+function getSavedNumber(key) {
+  try {
+    const raw = window.localStorage.getItem(key);
+    const parsed = Number(raw);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+  } catch (e) {
+    return 0;
+  }
+}
+
+function saveWaterContribution(count) {
+  const previousTotal = getSavedNumber(waterTotalKey);
+  const previousEntries = getSavedNumber(waterEntriesKey);
+  try {
+    window.localStorage.setItem(waterTotalKey, String(previousTotal + count));
+    window.localStorage.setItem(waterEntriesKey, String(previousEntries + 1));
+  } catch (e) {
+    // ignore storage failures
+  }
+}
+
+function clearWaterTheme() {
+  document.body.classList.remove(
+    "water-level-1",
+    "water-level-2",
+    "water-level-3",
+    "water-level-4"
+  );
+}
+
+function applyWaterTheme(level) {
+  clearWaterTheme();
+  if (level >= 1 && level <= 4) {
+    document.body.classList.add(`water-level-${level}`);
+  }
+}
+
+function showWaterMeter() {
+  if (!textReveal || storyEnded || waterMeterShown) {
+    return;
+  }
+
+  const totalWater = getSavedNumber(waterTotalKey);
+  const totalEntries = getSavedNumber(waterEntriesKey);
+  const target = 120;
+  const units = 20;
+  const filledUnits = Math.min(units, Math.round((totalWater / target) * units));
+
+  const block = document.createElement("div");
+  block.className = "choice-line water-meter";
+
+  const title = document.createElement("div");
+  title.className = "water-game-title";
+  title.textContent = "Pool meter (supposedly):";
+
+  const meter = document.createElement("div");
+  meter.className = "water-meter-bar";
+  meter.textContent = `${"💧".repeat(filledUnits)}${"⬜".repeat(units - filledUnits)}`;
+
+  const note = document.createElement("div");
+  note.className = "line-text";
+  note.textContent = `Total so far: ${totalWater} litres from ${totalEntries} picks.`;
+
+  block.append(title, meter, note);
+  textReveal.append(block);
+  waterMeterShown = true;
+
+  if (endingNote) {
+    endingNote.textContent = "Thanks, can wait to see you Maja and Oskar.";
+    endingNote.hidden = false;
+  }
+
+  requestAnimationFrame(() => {
+    block.scrollIntoView({ behavior: "smooth", block: "end" });
+  });
+}
+
+let backgroundAudio;
+
+function playBackgroundMusic() {
+  if (!backgroundAudio) {
+    backgroundAudio = new Audio("Every_Seasons.mp3");
+    backgroundAudio.volume = 0.8;
+  }
+
+  backgroundAudio.play().catch(console.error);
+}
+
+function clearTimer() {
+  if (timerId) {
+    clearInterval(timerId);
+    timerId = null;
+  }
+}
+
+function showChoice() {
+  choiceVisible = true;
+  if (!textReveal || choiceBlock) {
+    return;
+  }
+
+  const block = document.createElement("div");
+  block.className = "choice-line";
+
+  const addWater = document.createElement("button");
+  addWater.type = "button";
+  addWater.textContent = "Add water";
+
+  const noWater = document.createElement("button");
+  noWater.type = "button";
+  noWater.className = "secondary";
+  noWater.textContent = "Do not add water";
+
+  addWater.addEventListener("click", showWaterQuantityChoice);
+  noWater.addEventListener("click", showNoWaterConfirmation);
+
+  block.append(addWater, noWater);
+  choiceBlock = block;
+  textReveal.append(block);
+
+  requestAnimationFrame(() => {
+    block.scrollIntoView({ behavior: "smooth", block: "end" });
+  });
+}
+
+function showWaterQuantityChoice() {
+  hideChoice();
+
+  if (!textReveal || choiceBlock) {
+    return;
+  }
+
+  const block = document.createElement("div");
+  block.className = "choice-line";
+
+  const title = document.createElement("div");
+  title.className = "water-game-title";
+  title.textContent = "Choose how much water will you bring:";
+
+  const options = document.createElement("div");
+  options.className = "water-options";
+
+  [1, 2, 3, 4].forEach((count) => {
+    const option = document.createElement("button");
+    option.type = "button";
+    option.className = "emoji-option";
+    option.textContent = "💧".repeat(count);
+    option.setAttribute("aria-label", `Choose ${count} drops of water`);
+    option.addEventListener("click", () => selectWaterQuantity(count));
+    options.append(option);
+  });
+
+  const back = document.createElement("button");
+  back.type = "button";
+  back.className = "secondary";
+  back.textContent = "Back";
+  back.addEventListener("click", () => {
+    hideChoice();
+    showChoice();
+  });
+
+  block.append(title, options, back);
+  choiceBlock = block;
+  choiceVisible = true;
+  textReveal.append(block);
+
+  requestAnimationFrame(() => {
+    block.scrollIntoView({ behavior: "smooth", block: "end" });
+  });
+}
+
+function selectWaterQuantity(count) {
+  hideChoice();
+  selectedWaterLevel = count;
+  applyWaterTheme(count);
+  saveWaterContribution(count);
+
+  if (count === 4) {
+    playBackgroundMusic();
+  }
+
+  const droplets = "💧".repeat(count);
+  addLine(`Cleo: I'll bring ${droplets}.`);
+  continueWaterEnding();
+}
+
+function hideChoice() {
+  choiceVisible = false;
+  if (choiceBlock) {
+    choiceBlock.remove();
+    choiceBlock = null;
+  }
+}
+
+function hideConfirmation() {
+  if (confirmationBlock) {
+    confirmationBlock.remove();
+    confirmationBlock = null;
+  }
+}
+
+function showNoWaterConfirmation() {
+  hideChoice();
+
+  if (!textReveal || confirmationBlock) {
+    return;
+  }
+
+  const block = document.createElement("div");
+  block.className = "choice-line confirmation-line";
+
+  const message = document.createElement("div");
+  message.className = "line-text";
+  message.textContent = "are you shure??🐰";
+
+  const yesButton = document.createElement("button");
+  yesButton.type = "button";
+  yesButton.textContent = "Yes";
+
+  const noButton = document.createElement("button");
+  noButton.type = "button";
+  noButton.className = "secondary";
+  noButton.textContent = "No";
+
+  yesButton.addEventListener("click", showAccessDeniedEnding);
+  noButton.addEventListener("click", () => {
+    hideConfirmation();
+    showChoice();
+  });
+
+  block.append(message, yesButton, noButton);
+  confirmationBlock = block;
+  textReveal.append(block);
+
+  requestAnimationFrame(() => {
+    block.scrollIntoView({ behavior: "smooth", block: "end" });
+  });
+}
+
+function showAccessDeniedEnding() {
+  storyEnded = true;
+  clearTimer();
+  hideChoice();
+  hideConfirmation();
+  document.body.classList.add("dryland", "access-denied");
+
+  if (textReveal) {
+    const nodes = Array.from(textReveal.children);
+    const removeNext = () => {
+      if (!nodes.length) {
+        if (endingNote) {
+          endingNote.textContent = "encrypted file found: access denied";
+          endingNote.hidden = false;
+        }
+        return;
+      }
+
+      const nextNode = nodes.pop();
+      if (nextNode) {
+        nextNode.style.transition = "opacity 0.2s ease, transform 0.2s ease";
+        nextNode.style.opacity = "0";
+        nextNode.style.transform = "translateY(18px)";
+        setTimeout(() => nextNode.remove(), 180);
+      }
+
+      setTimeout(removeNext, 90);
+    };
+
+    removeNext();
+  }
+
+  if (endingNote) {
+    endingNote.textContent = "";
+    endingNote.hidden = true;
+  }
+}
+
+function continueWaterEnding() {
+  hideChoice();
+
+  if (endingNote) {
+    endingNote.hidden = true;
+    endingNote.textContent = "";
+  }
+
+  if (storyEnded) {
+    return;
+  }
+
+  showNextLine();
+
+  if (lineIndex < lines.length) {
+    clearTimer();
+    timerId = window.setInterval(showNextLine, 5000);
   }
 }
 
@@ -113,38 +430,154 @@ function createSparkles() {
 
   document.body.appendChild(overlay);
 
-  // remove after 6s
-  setTimeout(() => {
-    overlay.remove();
-  }, 6000);
+  
 }
 
 function showNextLine() {
-  if (lineIndex >= lines.length) {
+  if (storyEnded || choiceVisible || lineIndex >= lines.length) {
     return;
   }
 
   addLine(lines[lineIndex]);
   lineIndex += 1;
 
+  if (lineIndex === choicePointIndex) {
+    clearTimer();
+    showChoice();
+    return;
+  }
+
   if (lineIndex >= lines.length && timerId) {
-    clearInterval(timerId);
-    timerId = null;
+    clearTimer();
+  }
+
+  if (lineIndex >= lines.length) {
+    showWaterMeter();
   }
 }
 
 function startAutoReveal() {
   showNextLine();
-  timerId = window.setInterval(showNextLine, 1700);
+  if (!choiceVisible && !storyEnded) {
+    clearTimer();
+    timerId = window.setInterval(showNextLine, 10000);
+  }
 }
 
 function advanceOnDemand() {
-  if (timerId) {
-    clearInterval(timerId);
-    timerId = null;
+  if (!isUnlocked || choiceVisible || storyEnded) {
+    return;
   }
 
+  clearTimer();
   showNextLine();
+}
+
+function isCodeValid(value) {
+  return acceptedCodes.has(value.trim().toLowerCase());
+}
+
+function unlockPage(save = true) {
+  isUnlocked = true;
+  document.body.classList.remove("locked");
+  clearWaterTheme();
+  selectedWaterLevel = 0;
+  waterMeterShown = false;
+  if (endingNote) {
+    endingNote.textContent = "";
+    endingNote.hidden = true;
+  }
+  if (relockButton) {
+    relockButton.hidden = false;
+  }
+
+  if (lockScreen) {
+    lockScreen.classList.add("hidden");
+    lockScreen.setAttribute("aria-hidden", "true");
+  }
+
+  if (save) {
+    try {
+      window.sessionStorage.setItem(unlockSessionKey, "1");
+    } catch (e) {
+      // Ignore storage failures in private browsing modes.
+    }
+  }
+
+  if (textReveal && !textReveal.dataset.started) {
+    textReveal.dataset.started = "1";
+    startAutoReveal();
+
+    const hint = document.createElement("div");
+    hint.className = "hint";
+    hint.textContent = "Press Enter or tap to skip ahead.";
+    textReveal.after(hint);
+  }
+}
+
+function showLockScreen() {
+  isUnlocked = false;
+  document.body.classList.add("locked");
+  if (relockButton) {
+    relockButton.hidden = true;
+  }
+  if (lockScreen) {
+    lockScreen.classList.remove("hidden");
+    lockScreen.removeAttribute("aria-hidden");
+  }
+  if (accessCodeInput) {
+    accessCodeInput.focus();
+  }
+}
+
+function initAccessGate() {
+  let previouslyUnlocked = false;
+  try {
+    previouslyUnlocked = window.sessionStorage.getItem(unlockSessionKey) === "1";
+  } catch (e) {
+    previouslyUnlocked = false;
+  }
+
+  if (previouslyUnlocked) {
+    unlockPage(false);
+    return;
+  }
+
+  showLockScreen();
+
+  if (lockForm) {
+    lockForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const typedCode = accessCodeInput ? accessCodeInput.value : "";
+      if (!isCodeValid(typedCode)) {
+        if (lockMessage) {
+          lockMessage.textContent = "Wrong code. hint: it’s something related to the pool party theme.";
+        }
+        if (accessCodeInput) {
+          accessCodeInput.select();
+        }
+        return;
+      }
+
+      if (lockMessage) {
+        lockMessage.textContent = "";
+      }
+
+      unlockPage(true);
+    });
+  }
+}
+
+if (relockButton) {
+  relockButton.addEventListener("click", () => {
+    try {
+      window.sessionStorage.removeItem(unlockSessionKey);
+    } catch (e) {
+      // ignore
+    }
+    window.location.reload();
+  });
 }
 
 document.addEventListener("keydown", (event) => {
@@ -157,11 +590,4 @@ document.addEventListener("pointerup", () => {
   advanceOnDemand();
 });
 
-if (textReveal) {
-  startAutoReveal();
-
-  const hint = document.createElement("div");
-  hint.className = "hint";
-  hint.textContent = "Press Enter or tap to skip ahead.";
-  textReveal.after(hint);
-}
+initAccessGate();
