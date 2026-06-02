@@ -14,20 +14,20 @@ const acceptedCodes = new Set(["h2o", "water", "voda"]);
 
 const lines = [
   "Cleo: Cleo!",
-  "Matej: Hey, Cleo!",
+  "Narator: Hey, Cleo!",
   "Stage direction: [you look around, confused]",
-  "Matej: Yes, *you*, Cleo.",
-  "Matej: We’re in some trouble here. Can you help?",
-  "Matej: Please? Our Zodiac\\* won’t let go; we’ve been preconditioned to blow things out of proportion. You know the mermaids, the pool party, the princesses. All we need you to do is just help us a little with the pool.",
+  "Narator: Yes, *you*, Cleo.",
+  "Narator: We’re in some trouble here. Can you help?",
+  "Narator: Please? Our Zodiac\\* won’t let go; we’ve been preconditioned to blow things out of proportion. You know the mermaids, the pool party, the princesses. All we need you to do is just help us a little with the pool.",
   "Cleo: *approaches* I’m not good with pools.",
-  "Matej: You’ll be fine. Matej\\* has already taken care of most of it; they brought it from Vienna just now.",
+  "Narator: You’ll be fine. Matej\\* has already taken care of most of it; they brought it from Vienna just now.",
   "Cleo: So, what do you need *me* for?",
-  "Matej: Well, we need to fill up the pool, right? And how else would we do that, if not by asking every single person invited to bring 💧💧💧 3–4 litres of water 💧💧💧for it? To *just add water*.",
+  "Narator: Well, we need to fill up the pool, right? And how else would we do that, if not by asking every single person invited to bring 💧💧💧 3–4 litres of water 💧💧💧for it? To *just add water*.",
   "Cleo: Are you serious?",
-  "Matej: Sadly, yes, but it will be fun! Don’t worry about the rest.",
-  "Matej: Hmm, actually, never mind, there is one more thing. Definitely worry about the sun! 50 SPF mandatory!",
+  "Narator: Sadly, yes, but it will be fun! Don’t worry about the rest.",
+  "Narator: Hmm, actually, never mind, there is one more thing. Definitely worry about the sun! 50 SPF mandatory!",
   "Cleo: But I’m confused. Where is the pool, anyway?",
-  "Matej: ✨Oh, yes, silly us!✨ ",
+  "Narator: ✨Oh, yes, silly us!✨ ",
   "✨We’ll inflate it in Tivoli. Monday, the 8th of June!✨"
 ];
 
@@ -168,10 +168,15 @@ function showWaterMeter() {
   textReveal.append(block);
   waterMeterShown = true;
 
-  if (endingNote) {
-    endingNote.textContent = "Thanks, can wait to see you Maja and Oskar.";
-    endingNote.hidden = false;
-  }
+  if (endingNote && (selectedWaterLevel === 3 || selectedWaterLevel === 4)) {
+  endingNote.textContent = "Thanks hihi, can’t wait to see you there to see you Maja and Oskar.";
+  endingNote.hidden = false;
+}
+
+if (endingNote && (selectedWaterLevel === 1 || selectedWaterLevel === 2)) {
+  endingNote.textContent = "Thanks, can’t wait to see you there to see you Maja and Oskar.";
+  endingNote.hidden = false;
+}
 
   requestAnimationFrame(() => {
     block.scrollIntoView({ behavior: "smooth", block: "end" });
