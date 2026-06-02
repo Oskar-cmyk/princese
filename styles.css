@@ -1,12 +1,8 @@
 :root {
   color-scheme: light;
-  font-family: "Trebuchet MS", "Gill Sans", "Comic Sans MS", sans-serif;
-  --pink-1: #ffd1e8;
-  --pink-2: #ff9fcf;
-  --pink-3: #ff6fb5;
-  --ink: #5b2145;
-  --paper: rgba(255, 255, 255, 0.82);
-  --shadow: 0 22px 48px rgba(201, 62, 128, 0.24);
+  font-family: Georgia, "Times New Roman", serif;
+  --ink: #5c1438;
+  --bg: #ffb4d8;
 }
 
 * {
@@ -18,345 +14,83 @@ body {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background:
-    radial-gradient(circle at top, rgba(255, 255, 255, 0.65), transparent 35%),
-    linear-gradient(135deg, var(--pink-1), #ffe6f3 40%, #fff6fb 100%);
-  color: var(--ink);
-  transition: background 0.5s ease, color 0.5s ease;
-  overflow: hidden;
-}
-
-.theme-pink::before,
-.theme-pink::after {
-  content: "";
-  position: fixed;
-  inset: auto;
-  border-radius: 999px;
-  pointer-events: none;
-  filter: blur(10px);
-  opacity: 0.55;
-}
-
-.theme-pink::before {
-  width: 240px;
-  height: 240px;
-  background: rgba(255, 120, 186, 0.22);
-  top: -40px;
-  right: -40px;
-}
-
-.theme-pink::after {
-  width: 180px;
-  height: 180px;
-  background: rgba(255, 255, 255, 0.45);
-  bottom: -30px;
-  left: -30px;
-}
-
-.game-shell {
-  width: min(920px, calc(100vw - 2rem));
-  display: grid;
-  gap: 1rem;
-  padding: 1rem 0;
-}
-
-.header-card,
-.scene-card {
-  background: var(--paper);
-  backdrop-filter: blur(14px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: var(--shadow);
-}
-
-.header-card {
-  border-radius: 1.5rem;
-  padding: 1.5rem 1.5rem 1.25rem;
-}
-
-.chapter {
-  margin: 0 0 0.4rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--pink-3);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.header-card h1 {
-  margin: 0;
-  font-size: clamp(2rem, 5vw, 4rem);
-  line-height: 0.95;
-}
-
-.subtitle {
-  margin: 0.8rem 0 0;
-  max-width: 58ch;
-  font-size: 1.05rem;
-}
-
-.scene-card {
-  border-radius: 1.75rem;
-  padding: 1.25rem;
-}
-
-.portrait-row {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-}
-
-.portrait {
-  min-height: 6rem;
-  border-radius: 1.2rem;
-  display: grid;
-  place-items: end start;
-  padding: 0.85rem;
-  font-weight: 700;
-  font-size: 1rem;
-  color: white;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.cleo {
-  background: linear-gradient(145deg, #ff75be, #ff9ed0);
-}
-
-.matej {
-  background: linear-gradient(145deg, #ff4f8f, #ffb5dc);
-}
-
-.zodiac {
-  background: linear-gradient(145deg, #f77cc4, #ffd4ea);
+  background: var(--bg);
+  padding: 1.5rem;
   color: var(--ink);
 }
 
-.dialogue-box {
-  background: rgba(255, 255, 255, 0.78);
-  border: 2px solid rgba(255, 128, 191, 0.35);
-  border-radius: 1.3rem;
-  padding: 1rem 1rem 1.1rem;
-  min-height: 16rem;
-}
-
-.sms-thread {
-  display: grid;
-  gap: 0.7rem;
-}
-
-.sms-log {
-  display: grid;
-  gap: 0.7rem;
-}
-
-.sms-bubble {
-  max-width: min(80%, 42rem);
-  padding: 0.8rem 0.95rem;
-  border-radius: 1.15rem 1.15rem 1.15rem 0.35rem;
-  background: rgba(255, 255, 255, 0.92);
-  border: 1px solid rgba(255, 146, 201, 0.45);
-  box-shadow: 0 10px 20px rgba(201, 62, 128, 0.08);
-}
-
-.sms-bubble.right {
-  margin-left: auto;
-  border-radius: 1.15rem 1.15rem 0.35rem 1.15rem;
-  background: linear-gradient(135deg, #ff7fbc, #ffc1df);
-  color: #4e1739;
-}
-
-.sms-bubble.system {
-  max-width: 100%;
-  margin: 0 auto;
+.center-stage {
   text-align: center;
-  background: rgba(255, 237, 246, 0.9);
-  color: var(--pink-3);
-  font-weight: 700;
+  width: min(42rem, 100%);
+  text-align: center;
 }
 
-.sms-name {
-  display: block;
-  margin-bottom: 0.35rem;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  opacity: 0.9;
+.text-reveal {
+  display: grid;
+  gap: 0.7rem;
+  font-size: clamp(1.4rem, 4vw, 2.1rem);
+  line-height: 1.35;
+  letter-spacing: 0.01em;
 }
 
-.sms-text {
-  margin: 0;
-  font-size: 1.02rem;
-  line-height: 1.5;
+.text-line {
+  display: grid;
+  gap: 0.2rem;
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 0.5s ease forwards;
 }
 
-.speaker {
-  margin: 0 0 0.5rem;
-  font-size: 0.88rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--pink-3);
-}
-
-.message {
-  margin: 0;
-  font-size: clamp(1.1rem, 2.7vw, 1.45rem);
-  line-height: 1.45;
-}
-
-.choice-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-button {
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, var(--pink-3), #ff87c0);
-  color: #fff;
-  padding: 0.85rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 12px 24px rgba(255, 111, 181, 0.3);
-  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
-}
-
-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 16px 28px rgba(255, 111, 181, 0.36);
-}
-
-button:disabled {
-  cursor: default;
+.hint {
+  margin-top: 1.2rem;
+  font-size: 0.9rem;
   opacity: 0.7;
-  transform: none;
 }
 
-button.secondary {
-  background: linear-gradient(135deg, #6f4b63, #3a2235);
-}
-
-.ending-note {
-  margin: 1rem 0 0;
-  font-weight: 700;
-  font-size: 1.05rem;
-}
-
-body.sparkly {
-  background:
-    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.95), transparent 16%),
-    radial-gradient(circle at 80% 10%, rgba(255, 255, 255, 0.92), transparent 14%),
-    radial-gradient(circle at 30% 75%, rgba(255, 255, 255, 0.8), transparent 18%),
-    linear-gradient(135deg, #ffe0f0, #ffd0ec 45%, #fff8fd 100%);
-}
-
-body.sparkly .scene-card,
-body.sparkly .header-card {
-  border-color: rgba(255, 255, 255, 0.9);
-}
-
-body.sparkly .ending-note {
-  color: #c12d84;
-}
-
-body.sparkly .dialogue-box {
-  position: relative;
-  overflow: hidden;
-}
-
-body.sparkly .dialogue-box::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 2px, transparent 3px),
-    radial-gradient(circle, rgba(255, 220, 248, 0.9) 0 1.5px, transparent 3px);
-  background-size: 24px 24px, 34px 34px;
-  mix-blend-mode: screen;
-  pointer-events: none;
-  animation: drift 6s linear infinite;
-}
-
-body.moody {
-  background:
-    radial-gradient(circle at 20% 20%, rgba(130, 130, 130, 0.22), transparent 18%),
-    linear-gradient(135deg, #111111, #1a1a1f 45%, #050505 100%);
-  color: #f5f5f5;
-}
-
-body.moody .header-card,
-body.moody .scene-card {
-  background: rgba(18, 18, 22, 0.92);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.46);
-}
-
-body.moody .dialogue-box {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-body.moody .sms-bubble {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.08);
-  color: #f3f3f3;
-}
-
-body.moody .sms-bubble.right {
-  background: linear-gradient(135deg, #202027, #111115);
-  color: #f3f3f3;
-}
-
-body.moody .sms-bubble.system {
-  background: rgba(255, 255, 255, 0.05);
-  color: #d8a7c0;
-}
-
-body.moody .message,
-body.moody .subtitle {
-  color: #dddddd;
-}
-
-body.moody .chapter,
-body.moody .speaker,
-body.moody .ending-note {
-  color: #c98aa9;
-}
-
-body.moody button {
-  background: linear-gradient(135deg, #2a2a30, #111111);
-  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.35);
-}
-
-@keyframes drift {
+@keyframes fadeUp {
   from {
-    transform: translate3d(0, 0, 0);
+    opacity: 0;
+    transform: translateY(10px);
   }
 
   to {
-    transform: translate3d(24px, -18px, 0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 640px) {
-  .game-shell {
-    width: min(100vw - 1rem, 920px);
-  }
+.center-stage h1,
+.center-stage p {
+  font-weight: 400;
+}
 
-  .header-card,
-  .scene-card {
-    border-radius: 1.25rem;
-  }
+.text-reveal:empty::before {
+  content: "";
+  display: block;
+  min-height: 1.35em;
+}
 
-  .portrait-row {
-    grid-template-columns: 1fr;
-  }
+.hint {
+  margin-top: 1.2rem;
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+.speaker {
+  text-align: left;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  opacity: 0.65;
+  margin-bottom: 0.25rem;
+}
 
-  .portrait {
-    min-height: 4.8rem;
-  }
+.line-text {
+  text-align: left;
+}
+
+.text-line i {
+  font-style: italic;
+}
+
+.text-line.last {
+  font-weight: 700;
 }
