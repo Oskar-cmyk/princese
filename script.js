@@ -15,7 +15,8 @@ const lines = [
   "Matej: Sadly, yes, but it will be fun! Don’t worry about the rest.",
   "Matej: Hmm, actually, never mind, there is one more thing. Definitely worry about the sun! 50 SPF mandatory!",
   "Cleo: But I’m confused. Where is the pool, anyway?",
-  "Matej: ✨Oh, yes, silly us! We’ll inflate it in Tivoli. Monday, the 8th of June!✨"
+  "Matej: ✨Oh, yes, silly us!✨ ",
+  "✨We’ll inflate it in Tivoli. Monday, the 8th of June!✨"
 ];
 
 let lineIndex = 0;
@@ -58,6 +59,64 @@ function addLine(lineData) {
 
   line.append(text);
   textReveal.append(line);
+  // ensure the new line is visible; smooth on capable browsers
+  requestAnimationFrame(() => {
+    try {
+      // scroll the element into view in the page (uses the page scrollbar)
+      line.scrollIntoView({ behavior: "smooth", block: "end" });
+    } catch (e) {
+      // fallback to window scroll
+      try {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      } catch (err) {
+        // last-resort direct set
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    }
+  });
+  // if this is the last line, trigger final effect
+  if (line.classList.contains('last')) {
+    // small delay so the line is visible before the effect
+    setTimeout(() => createSparkles(), 250);
+  }
+}
+
+function createSparkles() {
+  const overlay = document.createElement('div');
+  overlay.className = 'sparkles-overlay';
+
+  const rand = (min, max) => Math.random() * (max - min) + min;
+
+  // create sparkles
+  for (let i = 0; i < 12; i++) {
+    const s = document.createElement('div');
+    s.className = 'sparkle';
+    s.textContent = '✨';
+    s.style.left = `${rand(5, 95)}%`;
+    s.style.top = `${rand(10, 80)}%`;
+    s.style.fontSize = `${rand(14, 36)}px`;
+    s.style.animationDelay = `${rand(0, 0.8)}s`;
+    overlay.appendChild(s);
+  }
+
+  // create floating water emojis
+  for (let i = 0; i < 6; i++) {
+    const w = document.createElement('div');
+    w.className = 'water-emoji';
+    w.textContent = '💧';
+    w.style.left = `${rand(10, 90)}%`;
+    w.style.top = `${rand(60, 95)}%`;
+    w.style.fontSize = `${rand(18, 36)}px`;
+    w.style.animationDelay = `${rand(0, 0.6)}s`;
+    overlay.appendChild(w);
+  }
+
+  document.body.appendChild(overlay);
+
+  // remove after 6s
+  setTimeout(() => {
+    overlay.remove();
+  }, 6000);
 }
 
 function showNextLine() {
