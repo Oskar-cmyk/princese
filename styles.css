@@ -392,3 +392,39 @@ body.access-denied .ending-note {
   20% { opacity: 1; }
   100% { opacity: 0; transform: translateY(-140px) scale(1.1); }
 }
+/* REPLACE this: */
+.water-meter {
+  margin-top: 0.9rem;
+  width: min(34rem, 100%);
+  padding: 0.85rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 18px rgba(24, 64, 100, 0.12);
+}
+
+.water-meter-bar {
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+/* WITH this: */
+.water-meter {
+  margin-top: 0.9rem;
+  width: min(34rem, 100%);
+  max-width: 100%;
+  padding: 0.85rem;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 18px rgba(24, 64, 100, 0.12);
+  overflow: hidden;
+}
+
+.water-meter-bar {
+  font-size: clamp(0.75rem, 3vw, 1.1rem);
+  letter-spacing: 0.04em;
+  text-align: center;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
