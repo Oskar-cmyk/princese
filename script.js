@@ -28,7 +28,8 @@ const lines = [
   "Narator: Hmm, actually, never mind, there is one more thing. Definitely worry about the sun! 50 SPF mandatory!",
   "Cleo: But I’m confused. Where is the pool, anyway?",
   "Narator: ✨Oh, yes, silly us!✨ ",
-  "✨We’ll inflate it in Tivoli. Monday, the 8th of June!✨"
+  "✨We'll inflate it in Tivoli. Monday, the 8th of June!✨",
+  "Narator: We'll keep you posted on the details. 🌊"
 ];
 
 let lineIndex = 0;
@@ -49,7 +50,7 @@ function addLine(lineData) {
   const line = document.createElement("div");
   line.className = "text-line";
   // mark the final line so it can be styled as bold
-  if (lineIndex === lines.length - 1) {
+  if (lineIndex === lines.length - 2) {
     line.classList.add("last");
   }
 
@@ -458,6 +459,16 @@ function showNextLine() {
 
   if (lineIndex >= lines.length) {
     showWaterMeter();
+    // Show ending note after a short delay so it appears below the meter
+    setTimeout(() => {
+      if (endingNote) {
+        endingNote.textContent = (selectedWaterLevel === 3 || selectedWaterLevel === 4)
+          ? "Thanks hihi, can't wait to see you there Maja and Oskar!"
+          : "Thanks, can't wait to see you there Maja and Oskar!";
+        endingNote.hidden = false;
+        endingNote.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
+    }, 600);
   }
 }
 
