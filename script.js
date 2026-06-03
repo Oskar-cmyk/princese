@@ -51,7 +51,7 @@ function addLine(lineData) {
   const line = document.createElement("div");
   line.className = "text-line";
   // mark the final line so it can be styled as bold
-  if (lineIndex === lines.length - 2) {
+  if (lineIndex === lines.length - 3) {
     line.classList.add("last");
   }
 
