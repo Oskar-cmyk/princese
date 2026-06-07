@@ -13,7 +13,7 @@ const youtubeSongUrl = "https://www.youtube.com/watch?v=SJi9WILdmcM";
 const acceptedCodes = new Set(["h2o", "water", "voda"]);
 
 const lines = [
-  "Cleo: Cleo!",
+  "Narator: Cleo!",
   "Narator: Hey, Cleo!",
   "Stage direction: [you look around, confused]",
   "Narator: Yes, *you*, Cleo.",
