@@ -28,9 +28,10 @@ const lines = [
   "Narator: Hmm, actually, never mind, there is one more thing. Definitely worry about the sun! 50 SPF mandatory!",
   "Cleo: But I’m confused. Where is the pool, anyway?",
   "Narator: ✨Oh, yes, silly us!✨ ",
-  "✨We'll inflate it in Tivoli. Monday, the 8th of June!✨",
+  "✨We'll inflate it in Tivoli. Monday, the 8th of June after 16h!✨",
   "Narator: We'll keep you posted on the details. 🌊",
-  "+1 welcome<3"
+  "+1 welcome<3",
+  
 ];
 
 let lineIndex = 0;
